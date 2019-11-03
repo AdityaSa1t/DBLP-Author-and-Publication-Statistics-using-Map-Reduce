@@ -9,10 +9,10 @@
 
 ## Overview
 As part of this assignment, a total of 4 map-reduce jobs have been created.
-Job **1** calculates the authorship score for each author.
-Job **2** calculates the number of publications in a particular year.
-Job **3** calculates the maximum, median and average number of co-authors for each author.
-Job **4** calculates the number of publication types(or venues) in each year.
+- Job **1** calculates the authorship score for each author.
+- Job **2** calculates the number of publications in a particular year.
+- Job **3** calculates the maximum, median and average number of co-authors for each author.
+- Job **4** calculates the number of publication types(or venues) in each year.
 
 ## Instructions 
 **SBT** is needed to build a jar for hadoop.   
