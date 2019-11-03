@@ -33,6 +33,7 @@ public class XmlInputFormatWithMultipleTags extends TextInputFormat {
     }
 
     public static class XmlRecordReader extends RecordReader<LongWritable, Text> {
+        //execution starts here, create array of bytes for each start and end tags
         private byte[][] startTags;
         private byte[][] endTags;
         private long start;
@@ -44,32 +45,31 @@ public class XmlInputFormatWithMultipleTags extends TextInputFormat {
 
 
         @Override
-        public void initialize(InputSplit is, TaskAttemptContext tac) throws IOException, InterruptedException {
-            FileSplit fileSplit = (FileSplit) is;
+        public void initialize(InputSplit is, TaskAttemptContext ctx) throws IOException {
+            FileSplit fSplit = (FileSplit) is;
 
-            String[] sTags = tac.getConfiguration().get(START_TAG_KEYS).split(",");
+            String[] sTags = ctx.getConfiguration().get(START_TAG_KEYS).split(",");
+            String[] eTags = ctx.getConfiguration().get(END_TAG_KEYS).split(",");
 
-            String[] eTags = tac.getConfiguration().get(END_TAG_KEYS).split(",");
             startTags = new byte[sTags.length][];
             endTags = new byte[sTags.length][];
             for (int i = 0; i < sTags.length; i++) {
                 startTags[i] = sTags[i].getBytes(StandardCharsets.UTF_8);
                 endTags[i] = eTags[i].getBytes(StandardCharsets.UTF_8);
-
             }
-            start = fileSplit.getStart();
-            end = start + fileSplit.getLength();
-            Path file = fileSplit.getPath();
 
-            FileSystem fs = file.getFileSystem(tac.getConfiguration());
-            fsin = fs.open(fileSplit.getPath());
+            start = fSplit.getStart();
+            end = start + fSplit.getLength();
+
+            Path file = fSplit.getPath();
+            FileSystem sys = file.getFileSystem(ctx.getConfiguration());
+            fsin = sys.open(fSplit.getPath());
             fsin.seek(start);
-
 
         }
 
         @Override
-        public boolean nextKeyValue() throws IOException, InterruptedException {
+        public boolean nextKeyValue() throws IOException {
             if (fsin.getPos() < end) {
                 //Changed here to perform readuntillmatch to all the tags
                 int res = readUntilMatch(startTags, false);
@@ -94,19 +94,17 @@ public class XmlInputFormatWithMultipleTags extends TextInputFormat {
         }
 
         @Override
-        public LongWritable getCurrentKey() throws IOException, InterruptedException {
+        public LongWritable getCurrentKey() {
             return key;
         }
 
         @Override
-        public Text getCurrentValue() throws IOException, InterruptedException {
+        public Text getCurrentValue() {
             return value;
-
-
         }
 
         @Override
-        public float getProgress() throws IOException, InterruptedException {
+        public float getProgress() throws IOException {
             return (fsin.getPos() - start) / (float) (end - start);
         }
 
@@ -116,63 +114,65 @@ public class XmlInputFormatWithMultipleTags extends TextInputFormat {
         }
 
         private int readUntilMatch(byte[][] match, boolean withinBlock) throws IOException {
-            int i1= 0, i2= 0, i3= 0, i4= 0, i5= 0, i6= 0, i7= 0, i8 = 0;
+            int tag1= 0, tag2= 0, tag3= 0, tag4= 0, tag5= 0, tag6= 0, tag7= 0, tag8 = 0;
             while (true) {
                 int b = fsin.read();
-                // end of file:
-                if (b == -1) return -1;
-                // save to buffer:
-                if (withinBlock) buffer.write(b);
 
-                // check if we're matching:
-                if (b == match[0][i1]) {
-                    i1++;
-                    if (i1 >= match[0].length) return 1;
-                } else i1 = 0;
+                if (b == -1) {
+                    return -1;// to check the end of file
+                }
 
-                if (b == match[1][i2]) {
-                    i2++;
-                    if (i2 >= match[1].length) return 2;
-                } else i2 = 0;
+                if (withinBlock) {
+                    buffer.write(b);// save to buffer:
+                }
 
-                if (b == match[2][i3]) {
-                    i3++;
-                    if (i3 >= match[2].length) return 3;
-                } else i3 = 0;
+                if (b == match[0][tag1]) {                 // check if there's any matching tags
 
-                if (b == match[3][i4]) {
-                    i4++;
-                    if (i4 >= match[3].length) return 4;
-                } else i4 = 0;
+                    tag1++;
+                    if (tag1 >= match[0].length) return 1;
+                } else tag1 = 0;
 
-                if (b == match[4][i5]) {
-                    i5++;
-                    if (i5 >= match[4].length) return 5;
-                } else i5 = 0;
+                if (b == match[1][tag2]) {
+                    tag2++;
+                    if (tag2 >= match[1].length) return 2;
+                } else tag2 = 0;
 
-                if (b == match[5][i6]) {
-                    i6++;
-                    if (i6 >= match[5].length) return 6;
-                } else i6 = 0;
+                if (b == match[2][tag3]) {
+                    tag3++;
+                    if (tag3 >= match[2].length) return 3;
+                } else tag3 = 0;
 
-                if (b == match[6][i7]) {
-                    i7++;
-                    if (i7 >= match[6].length) return 7;
-                } else i7 = 0;
+                if (b == match[3][tag4]) {
+                    tag4++;
+                    if (tag4 >= match[3].length) return 4;
+                } else tag4 = 0;
 
-                if (b == match[7][i8]) {
-                    i8++;
-                    if (i8 >= match[7].length) return 8;
-                } else i8 = 0;
+                if (b == match[4][tag5]) {
+                    tag5++;
+                    if (tag5 >= match[4].length) return 5;
+                } else tag5 = 0;
 
+                if (b == match[5][tag6]) {
+                    tag6++;
+                    if (tag6 >= match[5].length) return 6;
+                } else tag6 = 0;
+
+                if (b == match[6][tag7]) {
+                    tag7++;
+                    if (tag7 >= match[6].length) return 7;
+                } else tag7 = 0;
+
+                if (b == match[7][tag8]) {
+                    tag8++;
+                    if (tag8 >= match[7].length) return 8;
+                } else tag8 = 0;
 
                 // see if we've passed the stop point:
-                if (!withinBlock && (i1 == 0 && i2 == 0 && i3 == 0 && i4 == 0 && i5 == 0 && i6 == 0 && i7 == 0) && i8 == 0 && fsin.getPos() >= end)
+                if (!withinBlock && (tag1 == 0 && tag2 == 0 && tag3 == 0 && tag4 == 0 && tag5 == 0 && tag6 == 0 && tag7 == 0) && tag8 == 0 && fsin.getPos() >= end)
                     return -1;
             }
         }
 
     }
-
 
 }
