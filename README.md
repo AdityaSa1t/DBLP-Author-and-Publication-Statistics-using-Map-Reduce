@@ -1,6 +1,6 @@
 # CS441 - Homework 2 - Aditya Sawant
 #
-##### Description: Create a map/reduce program for parallel processing of the [publically available DBLP dataset](https://dblp.uni-trier.de) that contains entries for various publications at many different venues (e.g., conferences and journals).
+##### Description: Create a map/reduce program for parallel processing of the [publicly available DBLP dataset](https://dblp.uni-trier.de) that contains entries for various publications at many different venues (e.g., conferences and journals).
 #
 #
 ###### You can obtain this Git repo using the following command: 
@@ -30,4 +30,5 @@ Run the following command in the directory where the jar has been generated/stor
 
 
 
-
+**For AWS EMR** refer the following video: 
+[AWS EMR Execution Steps](https://www.youtube.com/channel/UCjewyw72Ed-_y94u9nDLXQw?view_as=subscriber)
