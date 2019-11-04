@@ -17,15 +17,14 @@ import java.nio.charset.StandardCharsets;
 
 
 /**
- * An implementation of XML input format.
+ * An implementation of XMLInputFormat.
  * Referred https://github.com/Mohammed-siddiq/hadoop-XMLInputFormatWithMultipleTags,
- * and added support for another tag.
+ * and added support for another tag (www).
  */
 public class XmlInputFormatWithMultipleTags extends TextInputFormat {
 
     public static final String START_TAG_KEYS = "xmlinput.start";
     public static final String END_TAG_KEYS = "xmlinput.end";
-
 
     @Override
     public RecordReader<LongWritable, Text> createRecordReader(InputSplit is, TaskAttemptContext tac) {
@@ -71,14 +70,13 @@ public class XmlInputFormatWithMultipleTags extends TextInputFormat {
         @Override
         public boolean nextKeyValue() throws IOException {
             if (fsin.getPos() < end) {
-                //Changed here to perform readuntillmatch to all the tags
-                int res = readUntilMatch(startTags, false);
-                if (res != -1) { // Read until start_tag1 or start_tag2
+                //perform the custom matchTags operation for all the tags
+                int res = matchTags(startTags, false);
+                if (-1 != res) { // Read until start_tag1 or start_tag2
                     try {
-
                         buffer.write(startTags[res - 1]);
                         //Changed to read all the contents before the end tag
-                        int res1 = readUntilMatch(endTags, true);
+                        int res1 = matchTags(endTags, true);
                         if (res1 != -1) { // changed here
                             // updating the buffer with contents between start and end tags.
                             value.set(buffer.getData(), 0, buffer.getLength());
@@ -113,7 +111,7 @@ public class XmlInputFormatWithMultipleTags extends TextInputFormat {
             fsin.close();
         }
 
-        private int readUntilMatch(byte[][] match, boolean withinBlock) throws IOException {
+        private int matchTags(byte[][] match, boolean withinBlock) throws IOException {
             int tag1= 0, tag2= 0, tag3= 0, tag4= 0, tag5= 0, tag6= 0, tag7= 0, tag8 = 0;
             while (true) {
                 int b = fsin.read();
@@ -123,10 +121,10 @@ public class XmlInputFormatWithMultipleTags extends TextInputFormat {
                 }
 
                 if (withinBlock) {
-                    buffer.write(b);// save to buffer:
+                    buffer.write(b);// save to xml buffer:
                 }
 
-                if (b == match[0][tag1]) {                 // check if there's any matching tags
+                if (b == match[0][tag1]) {    // verify matching tags
 
                     tag1++;
                     if (tag1 >= match[0].length) return 1;
@@ -166,13 +164,10 @@ public class XmlInputFormatWithMultipleTags extends TextInputFormat {
                     tag8++;
                     if (tag8 >= match[7].length) return 8;
                 } else tag8 = 0;
-
-                // see if we've passed the stop point:
+                // to check if we have reached the end of the tag
                 if (!withinBlock && (tag1 == 0 && tag2 == 0 && tag3 == 0 && tag4 == 0 && tag5 == 0 && tag6 == 0 && tag7 == 0) && tag8 == 0 && fsin.getPos() >= end)
                     return -1;
             }
         }
-
     }
-
 }
