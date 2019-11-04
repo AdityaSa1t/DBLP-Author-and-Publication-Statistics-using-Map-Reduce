@@ -31,4 +31,4 @@ The output for the given job will be created and stored in the directory mention
 
 
 **For AWS EMR** visit the following channel: 
-[AWS EMR Execution Steps](https://www.youtube.com/channel/UCjewyw72Ed-_y94u9nDLXQw?view_as=subscriber) 
+[AWS EMR Execution Steps](https://youtu.be/iJdvD5S2hwE) 
