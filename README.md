@@ -29,6 +29,7 @@ Run the following command in the directory where the jar has been generated/stor
 **P.S:** There must be an xml file present in the input directory which follows the dblp.dtd specification.
 The output for the given job will be created and stored in the directory mentioned in the args.
 
+The output for each job is in a csv format.
 
 **For AWS EMR** visit the following channel: 
 [AWS EMR Execution Steps](https://youtu.be/iJdvD5S2hwE) 
