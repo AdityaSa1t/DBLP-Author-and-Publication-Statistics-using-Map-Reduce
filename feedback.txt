@@ -1,0 +1,8 @@
+Hello Aditya,
+
+Your Hw2 is graded and your total grade is 7% + 3% for running on amazon EMR.
+
+Good job!
+
+Regards,
+Mohammed Siddiq.
