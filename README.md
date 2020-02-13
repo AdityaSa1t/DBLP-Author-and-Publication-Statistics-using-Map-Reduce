@@ -1,11 +1,6 @@
 # CS441 - Homework 2 - Aditya Sawant
 #
 ##### Description: Create a map/reduce program for parallel processing of the [publicly available DBLP dataset](https://dblp.uni-trier.de) that contains entries for various publications at many different venues (e.g., conferences and journals).
-#
-#
-###### You can obtain this Git repo using the following command: 
-```git clone https://AdityaSa1t@bitbucket.org/AdityaSa1t/aditya_sawant_hw2.git```
-
 
 ## Overview
 As part of this assignment, a total of 4 map-reduce jobs have been created.
